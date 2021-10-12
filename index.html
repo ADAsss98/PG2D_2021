@@ -38,20 +38,25 @@
                 dy = -dy;
             }
             
-            if(g<=255 && b<255)
+            if(g<=255 && b<255 && g!=0)
             {
             ctx.fillStyle = 'rgba('+r+','+g+','+b+','+a+')';
             ctx.fill();
             g -= 5;
             b += 5;
             }
-            if (g==0)
+            if (g==0 && i!=255)
             {
-            ctx.fillStyle = 'rgba('+r+','+g+','+b+','+a+')';
+            ctx.fillStyle = 'rgba('+r+','+i+','+b+','+a+')';
             ctx.fill();
-            console.log("test");
-            g = 255;
-            b = 0;
+            b -= 5;
+            i += 5;
+            }
+            if (i==255)
+            {
+                g = 255;
+                b = 0;
+                i = 0;
             }
         }
         
