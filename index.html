@@ -11,26 +11,49 @@
     <script>
         var c = document.getElementById("myCanvas");
         var ctx = c.getContext("2d");
-        ctx.beginPath();
-        ctx.arc(95, 50, 40, 0, 2 * Math.PI);
-        ctx.stroke();
-        ctx.fillStyle = "green";
-        ctx.fill();
-        var i=0;
-        setInterval(function()
+
+            var y = c.height-50;
+            var dy = -10;
+            var i = 0;
+            const r = 0;
+                a = 100;
+            var g = 255;
+                b = 0;
+                i = 0;
+            var rad = 50;
+
+        setInterval(bounce,50);
+        
+        function bounce()
         {
-            if(i==0)
-            {
-            ctx.fillStyle = "blue";
-            ctx.fill();
-            i=1;
-            }else
-            {
+            ctx.clearRect(0, 0, c.width, c.height);
+            ctx.beginPath();
+            ctx.arc(100, y, rad, 0, 2 * Math.PI);
             ctx.fillStyle = "green";
             ctx.fill();
-            i=0;
+            y += dy;
+
+            if(y + dy > c.height-rad || y + dy < rad+20)
+            {
+                dy = -dy;
             }
-        }, 1000);
+            
+            if(g<=255 && b<255)
+            {
+            ctx.fillStyle = 'rgba('+r+','+g+','+b+','+a+')';
+            ctx.fill();
+            g -= 5;
+            b += 5;
+            }
+            if (g==0)
+            {
+            ctx.fillStyle = 'rgba('+r+','+g+','+b+','+a+')';
+            ctx.fill();
+            console.log("test");
+            g = 255;
+            b = 0;
+            }
+        }
         
     </script>
 </body>
