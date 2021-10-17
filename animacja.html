@@ -10,67 +10,52 @@
     <canvas id="myCanvas" width="800" height="600"></canvas>
     <script>
         const canvas = document.getElementById("myCanvas");
-		const ctx = canvas.getContext("2d");
-		const width = canvas.width;
-		const height = canvas.heigth;      
+		const ctx = canvas.getContext("2d"); 
         
         var rectangleH = 10;
         var rectangleW = 75;
-        var rectangleX = (width - rectangleW) /2;
-        var keyRPress = false;
-        var keyLPress = false;
+        var Xway = (canvas.width / 2 - rectangleW);
+        var Yway = (canvas.height - rectangleH);
+        
+        drawRectangle();
+        window.addEventListener("keydown", draw, false);
         
         function drawRectangle()
         {
-            ctx.beginPath();
-            ctx.rect(rectangleX, canvas.height - rectangleH - 2, rectangleW, rectangleH);
             ctx.fillStyle = "red";
-            ctx.fill();
+            ctx.fillRect(Xway, Yway, rectangleW, rectangleH);
         }
-        function draw()
+        function draw(e)
         {
-            ctx.fillStyle = "green";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            drawRectangle();
-            if (keyRPress)
+            ctx.clearRect(Xway, Yway, rectangleW, rectangleH);
+            switch(e.keyCode)
             {
-                rectangleX +=5;
-                if (rectangleX + rectangleW > canvas.width)
-                {
-                    rectangleX = canvas.width - rectangleW-2;
-                }
+                //case 32:
+                //    shoot();
+                case 37:
+                    if (Xway >= 5)
+                    {
+                        Xway -=5;
+                    }
+                    else
+                    {
+                        drawRectangle();
+                    }
+                    break;
+                case 39:
+                    if (Xway <= canvas.width - rectangleW - 5)
+                    {
+                        Xway +=5;
+                    }
+                    else
+                    {
+                        drawRectangle();
+                    }
+                    break;
             }
-            else if(keyLPress)
-            {
-                rectangleX -=5;
-                if (rectangleX < 2)
-                {
-                    rectangleX = 2;
-                }
-            }
-            document.addEventListener("keydown", keyPush, false);
-            document.addEventListener("keyup", keyPull, false);
-            
-            function keyPush(e) {
-                if(e.key == "Right" || e.key == "ArrowRight") {
-                    keyRPress = true;
-                }
-                else if(e.key == "Left" || e.key == "ArrowLeft") 
-                {
-                    keyLPress = true;
-                }
-            }
-            function keyPull(e) {
-                if(e.key == "Right" || e.key == "ArrowRight") {
-                    keyRPress = false;
-                }
-                else if(e.key == "Left" || e.key == "ArrowLeft") 
-                {
-                    keyLPress = false;
-                }
-            }
+        drawRectangle();
         }
-        setInterval(draw,10);
+
 </script>
 </body>
 </html>
