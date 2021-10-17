@@ -7,6 +7,14 @@
     <title>Document</title>
 </head>
 <body>
-    <p>New</p>
+    <canvas id="myCanvas" width="800" height="600"></canvas>
+    <script>
+        var canvas = document.getElementById("myCanvas");
+		var ctx = canvas.getContext("2d");
+		ctx.fillStyle = "green";
+		ctx.rect(0,550,50,10);
+        ctx.fill();
+		ctx.stroke();
+    </script>
 </body>
 </html>
