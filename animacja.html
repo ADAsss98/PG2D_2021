@@ -11,10 +11,18 @@
     <script>
         var canvas = document.getElementById("myCanvas");
 		var ctx = canvas.getContext("2d");
-		ctx.fillStyle = "green";
-		ctx.rect(0,550,50,10);
-        ctx.fill();
-		ctx.stroke();
-    </script>
+		const width = canvas.width = window.innerWidth;
+		const height = canvas.heigth = window.innerHeight;      
+        
+        var rectangleH = 10;
+        var rectangleW = 75;
+        var rectangleX = (canvas.width - rectangleW) /2;
+        var keyRPress = false;
+        var keyLPress = false;
+        
+        function drawrectangle()
+        {
+            ctx.beginPath();
+            </script>
 </body>
 </html>
