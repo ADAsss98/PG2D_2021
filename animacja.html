@@ -9,20 +9,21 @@
 <body>
     <canvas id="myCanvas" width="800" height="600"></canvas>
     <script type="text/javascript">
-        const canvas = document.getElementById("myCanvas");
-		const ctx = canvas.getContext("2d"); 
-        
-        var rectangleH = 10;
-        var rectangleW = 50;
-        var xWay = (canvas.width / 2 - rectangleW);
-        var yWay = (canvas.height - rectangleH);
-        var bulletArray=[];
-        var targets = [];
+            var canvas = document.getElementById("myCanvas");
+            var ctx = canvas.getContext("2d");
+            
+            var rectangleH = 10;
+            var rectangleW = 50;
+            var xWay = canvas.width/2-rectangleH;
+            var yWay = canvas.height-rectangleH;
+            var bulletArray = [];
+            var targets = [];
+            var targetColor = "rgba(100, 200, 100, 1)";
 
-        drawRectangle();
-        window.addEventListener("keydown", draw, false);
-        setInterval(flyingBullet,10);
-        setInterval(createPoints,100);
+            drawRectangle();
+            window.addEventListener("keydown", draw, false);
+            setInterval(flyingBullet,25)
+            setInterval(createPoints,200)
 
         function drawRectangle()
         {
@@ -62,7 +63,7 @@
         }
         function shoot()
         {
-            var rad = 10;
+            var rad = 5;
             var xBall = xWay + rectangleW/2;
             var yBall = yWay - rectangleH - 10;
             var bullet = new Bullet(xBall,yBall,rad, "rgba(255, 255, 0, 1)");
@@ -75,13 +76,15 @@
             {
                 if (bulletArray[i].y == 0)
                 {
-                    bulletArray[i].delete();
+                    bulletArray[i].delete()
+                    bulletArray.splice(i,1)
                 }
                 else
                 {
                     if(hitCheck(bulletArray[i]))
                     {
-                        bulletArray[i]. delete();
+                        bulletArray[i]. delete()
+                        bulletArray.splice(i,1)
                     }
                     else
                     {
@@ -100,9 +103,9 @@
             this.color = color;
         }
         Bullet.prototype={
-            create: function()
+            draw: function()
             {
-                ctx.clearRect(this.xBall - 10, this.y, 21 ,21);
+                ctx.clearRect(this.xBall - 10, this.y, 20 ,20);
                 ctx.beginPath();
                 ctx.arc(this.xBall, this.y, this.rad, 0, Math.PI *2);
                 ctx.fillStyle = this.color;
@@ -110,26 +113,26 @@
                 ctx.closePath();
             },
             delete: function(){
-                ctx.clearRect(this.xBall - this.rad, this.y - this.rad, this.rad*2+1,this.rad*2+1);
+                ctx.clearRect(this.x - this.rad, this.y - this.rad, this.rad*2+1,this.rad*2+1);
             },
             update: function(){
                 this.y -=10;
             },
             deletePoint: function()
             {
-                ctx.clearRect(this.xBall-rad, this.y-rad, this.rad*2, this.rad*2);
+                ctx.clearRect(this.x-rad, this.y-rad, this.rad*2, this.rad*2);
             }
         }
         function createPoints()
         {
-            if(targets.length < 6)
+            if(targets.length < 10)
             {
-                rad = 20;
-                xBall = Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min))) + Math.ceil(min);
+                rad = 25;
+                x = Math.floor(Math.random() * (Math.floor(max) - Math.ceil(min))) + Math.ceil(min);
                 y = 50;
-                if (!closeHitCheck(xBall,rad))
+                if (!closeHitCheck(x,rad))
                 {
-                    var bulletPlace = new Bullet(xBall, y, rad, "rgba(255, 255, 0, 1)");
+                    var bulletPlace = new Bullet(x, y, rad, targetColor);
                     bulletPlace.create()
                     targets.push(bulletPlace);
                 }
@@ -140,21 +143,22 @@
         {
             for(var i=0; i<targets.length; i++)
                 {
-                    if((targets[i].xBall + rad + 6) >= bullet.xBall && (targets[i].xBall - rad + 6) <= bullet.xBall && (targets[i].y + rad + 6) >= bullet.y && (targets[i].y - rad + 6) <= bullet.y)
+                    if((targets[i].x + rad + 6) >= bullet.x && (targets[i].x - rad + 6) <= bullet.x && (targets[i].y + rad + 6) >= bullet.y && (targets[i].y - rad + 6) <= bullet.y)
                     {
-                        targets[i].deletePoint();
+                        targets[i].deletePoint()
+                        targets.splice(i,1)
                         return true;
                         break;
                     }
                 }
         }
-        function closeHitCheck()
+        function closeHitCheck(x, rad)
         {
             for(var i=0; i<targets.length; i++)
             {
-                if((targets[i].x + rad + 20) >= xBall && (targets[i].xBall - rad - 20) <= xBall)
+                if((targets[i].x + rad + 20) >= x && (targets[i].x - rad - 20) <= xBall)
                     {
-                        return false;
+                        return true;
                         break;
                     }
             }
