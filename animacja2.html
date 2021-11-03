@@ -28,7 +28,6 @@
 		var lines = [];
 		let reqAnim;
 
-
 		class Line
         {
 			constructor(x, y, width, height, color, speed)
@@ -51,18 +50,21 @@
             }
 		}
 
-		function rand(min, max) {
+		function rand(min, max)
+        {
 			min = Math.ceil(min); max = Math.floor(max);
 			return Math.floor(Math.random() * (max - min)) + min;
 		}
 
-		document.addEventListener('keydown', function(e) {
+		document.addEventListener('keydown', function(e)
+        {
 			e.preventDefault();
 			if (e.keyCode === 39) rightPressed = true;
 			if (e.keyCode === 37) leftPressed = true;
 		});
 
-		document.addEventListener('keyup', function(e) {
+		document.addEventListener('keyup', function(e)
+        {
 			e.preventDefault();
 			if (e.keyCode === 39) rightPressed = false;
 			if (e.keyCode === 37) leftPressed = false;
@@ -77,19 +79,21 @@
 			ctx.closePath();
 		};
 		
-		function drawRoad(){
+		function drawRoad()
+        {
 			drawRect(100, -400, 450, 1400, "gray");
 			drawRect(-200, -400, 250, 1400, "green");
 			drawRect(600, -400, 250, 1400, "green");
 		};
-		function drawCar(x,y,width,height,color){
+		function drawCar(x,y,width,height,color)
+        {
 			drawRect(x,y,width,height,color);
-		}
+		};
 		
 		function stopAnimation()
         {
             window.cancelAnimationFrame(reqAnim);
-        }
+        };
 
 		function animate()
         {
