@@ -4,10 +4,143 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Aplikacja 2</title>
 </head>
 <body>
+    <canvas id="myCanvas" width="800" height="600"></canvas>
+    <script type="text/javascript">
+            var canvas = document.getElementById("myCanvas");
+            var ctx = canvas.getContext("2d");
+            
+            var streetH = canvas.height;
+            var streetW = canvas.width - 300;
+            var whiteLane = canvas.height;
+            var carH = 60;
+            var carW = 30;
+            var xWay = streetW/2-carH;
+            var yWay = canvas.height-carH;
+            var wLaneArray = [];
 
-    
+            drawMainStreet();
+            drawCar();
+            window.addEventListener("keydown", draw, false);
+            whiteRect();
+            setInterval(movingLane,25);
+
+        function drawCar()
+        {
+            ctx.fillStyle = "red";
+            ctx.fillRect(xWay, yWay, carW, carH);
+        }
+        function drawMainStreet()
+        {
+            ctx.fillStyle = "grey";
+            ctx.fillRect(150, 0, streetW, streetH);
+        }
+        function draw(e)
+        {
+            ctx.clearRect(xWay, yWay, carW, carH);
+            switch(e.keyCode)
+            {
+                case 37: //left key
+                    if (xWay >= 155)
+                    {
+                        xWay -=5;
+                        drawMainStreet();
+                    }
+                    else
+                    {
+                        
+                        //drawMainStreet();
+                        drawCar();
+                    }
+                    break;
+                case 39: //right key
+                    if (xWay <= canvas.width - carW - 155)
+                    {
+                        xWay +=5;
+                        drawMainStreet();
+                    }
+                    else
+                    {
+                        //drawMainStreet();
+                        drawCar();
+                    }
+                    break;
+            }
+            drawCar();
+        }
+              
+        function whiteRect()
+        {
+            var xCenterLane = xWay + carW/2;
+            var wLane = new WLane(xCenterLane, canvas.width/2, 10, "white");
+            wLane.create();
+            wLaneArray.push(wLane);
+        }
+        function movingLane(wLane)
+        {
+            for (var i=0; i<wLaneArray.length; i++)
+            {
+                if (wLaneArray[i].y == 0)
+                {
+                    wLaneArray.update();
+                }
+                else
+                {
+                    wLaneArray[i].update();
+                    wLaneArray[i].create(); 
+                }
+            }
+        }
+
+        function WLane(x, y, width, color)
+        {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.color = color;
+        }
+        WLane.prototype={
+            create: function()
+            {
+                ctx.beginPath();
+                ctx.fillStyle = this.color;
+                ctx.fillRect(canvas.width/2, canvas.height, 10, 20);
+                ctx.closePath();
+            },
+            update: function(){
+                this.y -=10;
+            },
+        };/*
+
+                       
+        }
+
+        function hitCheck(bullet)
+        {
+            for(var i=0; i<targets.length; i++)
+                {
+                    if((targets[i].x + rad + 6) >= bullet.x && (targets[i].x - rad + 6) <= bullet.x && (targets[i].y + rad + 6) >= bullet.y && (targets[i].y - rad + 6) <= bullet.y)
+                    {
+                        targets[i].deletePoint()
+                        targets.splice(i,1)
+                        return true;
+                        break;
+                    }
+                }
+        }
+        function closeHitCheck(x, rad)
+        {
+            for(var i=0; i<targets.length; i++)
+            {
+                if((targets[i].x + rad + 20) >= x && (targets[i].x - rad - 20) <= x)
+                    {
+                        return true;
+                        break;
+                    }
+            }
+        }*/
+</script>
 </body>
 </html>
