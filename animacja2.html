@@ -8,139 +8,141 @@
 </head>
 <body>
     <canvas id="myCanvas" width="800" height="600"></canvas>
-    <script type="text/javascript">
-            var canvas = document.getElementById("myCanvas");
-            var ctx = canvas.getContext("2d");
-            
-            var streetH = canvas.height;
-            var streetW = canvas.width - 300;
-            var whiteLane = canvas.height;
-            var carH = 60;
-            var carW = 30;
-            var xWay = streetW/2-carH;
-            var yWay = canvas.height-carH;
-            var wLaneArray = [];
+	<script type="text/javascript">
+        var canvas = document.getElementById("myCanvas");
+        var ctx = canvas.getContext("2d");
 
-            drawMainStreet();
-            drawCar();
-            window.addEventListener("keydown", draw, false);
-            whiteRect();
-            setInterval(movingLane,25);
+		var carW = (canvas.width/2)-100;
+        var carH = (canvas.height)-130;
+		var xWay1 = carW;
+        var yWay1 = carH+15;
+        var xWay2 = carW;
+        var yWay2 = carH+65;
+    	var carX = 50;
+        var carY = 80;
+        var speed = 9;
+		var rightPressed = false;
+        var leftPressed = false;
+		var count = 0;
+        var checker = 0;
+		var lines = [];
+		let reqAnim;
 
-        function drawCar()
+
+		class Line
         {
-            ctx.fillStyle = "red";
-            ctx.fillRect(xWay, yWay, carW, carH);
-        }
-        function drawMainStreet()
-        {
-            ctx.fillStyle = "grey";
-            ctx.fillRect(150, 0, streetW, streetH);
-        }
-        function draw(e)
-        {
-            ctx.clearRect(xWay, yWay, carW, carH);
-            switch(e.keyCode)
+			constructor(x, y, width, height, color, speed)
             {
-                case 37: //left key
-                    if (xWay >= 155)
-                    {
-                        xWay -=5;
-                        drawMainStreet();
-                    }
-                    else
-                    {
-                        
-                        //drawMainStreet();
-                        drawCar();
-                    }
-                    break;
-                case 39: //right key
-                    if (xWay <= canvas.width - carW - 155)
-                    {
-                        xWay +=5;
-                        drawMainStreet();
-                    }
-                    else
-                    {
-                        //drawMainStreet();
-                        drawCar();
-                    }
-                    break;
+				this.x = x;
+				this.y = y;
+				this.width = width;
+				this.height = height;
+                this.color = color;
+				this.speed = speed;
+			}
+
+			drawRectangle()
+            {
+                drawRect(this.x, this.y, this.width, this.height, this.color);
             }
-            drawCar();
-        }
-              
-        function whiteRect()
-        {
-            var xCenterLane = xWay + carW/2;
-            var wLane = new WLane(xCenterLane, canvas.width/2, 10, "white");
-            wLane.create();
-            wLaneArray.push(wLane);
-        }
-        function movingLane(wLane)
-        {
-            for (var i=0; i<wLaneArray.length; i++)
+			update()
             {
-                if (wLaneArray[i].y == 0)
-                {
-                    wLaneArray.update();
-                }
-                else
-                {
-                    wLaneArray[i].update();
-                    wLaneArray[i].create(); 
-                }
+                this.y = this.y + this.speed;
             }
+		}
+
+		function rand(min, max) {
+			min = Math.ceil(min); max = Math.floor(max);
+			return Math.floor(Math.random() * (max - min)) + min;
+		}
+
+		document.addEventListener('keydown', function(e) {
+			e.preventDefault();
+			if (e.keyCode === 39) rightPressed = true;
+			if (e.keyCode === 37) leftPressed = true;
+		});
+
+		document.addEventListener('keyup', function(e) {
+			e.preventDefault();
+			if (e.keyCode === 39) rightPressed = false;
+			if (e.keyCode === 37) leftPressed = false;
+		});
+
+		function drawRect(x,y,width,height,color)
+        {
+			ctx.beginPath();
+			ctx.rect(x,y,width,height);
+			ctx.fillStyle = color;
+			ctx.fill();
+			ctx.closePath();
+		};
+		
+		function drawRoad(){
+			drawRect(100, -400, 450, 1400, "gray");
+			drawRect(-200, -400, 250, 1400, "green");
+			drawRect(600, -400, 250, 1400, "green");
+		};
+		function drawCar(x,y,width,height,color){
+			drawRect(x,y,width,height,color);
+		}
+		
+		function stopAnimation()
+        {
+            window.cancelAnimationFrame(reqAnim);
         }
 
-        function WLane(x, y, width, color)
+		function animate()
         {
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.color = color;
-        }
-        WLane.prototype={
-            create: function()
+			ctx.clearRect(0,0, 800,600);
+			reqAnim= window.requestAnimationFrame(animate);
+			count += 1;
+			if (rightPressed && carW<500) {
+        		 carW += speed;
+    		} else if (leftPressed && carW>100) {
+        		carW -= speed;
+    		};
+			ctx.save();
+			if(checker==1){
+				ctx.translate(-150+canvas.width/2,canvas.height/2);
+				ctx.rotate(5 * Math.PI / 180);
+				ctx.translate(150-canvas.width/2,-canvas.height/2);
+			};
+			if(checker==2){
+				ctx.translate(-150+canvas.width/2,canvas.height/2);
+				ctx.rotate(-(5 * Math.PI / 180));
+				ctx.translate(150-canvas.width/2,-canvas.height/2);
+			};
+
+			drawRoad();
+			if(count%20==0){
+				lines.push(new Line(50,-100,50,70,"red",7));
+				lines.push(new Line(550,-100,50,70,"red",7));
+				lines.push(new Line(320,-100,10,70,"white",7));
+				};
+			lines.forEach(function (line, i) {
+				line.drawRectangle();
+				line.update();
+				if(line.y > canvas.height + 100) lines.splice(i, 1);
+			});
+
+			drawCar(carW, carH, carX, carY, "blue");
+			ctx.stroke();
+			ctx.restore();
+
+			if(count%300==0)
             {
-                ctx.beginPath();
-                ctx.fillStyle = this.color;
-                ctx.fillRect(canvas.width/2, canvas.height, 10, 20);
-                ctx.closePath();
-            },
-            update: function(){
-                this.y -=10;
-            },
-        };/*
+			    speed+=1;
+			}
+			if(count%400==0)
+                checker=1;
+			if(count%800==0)
+                checker=0;
+			if(count%900==0)
+                checker=2;
+		};
 
-                       
-        }
+        animate();
 
-        function hitCheck(bullet)
-        {
-            for(var i=0; i<targets.length; i++)
-                {
-                    if((targets[i].x + rad + 6) >= bullet.x && (targets[i].x - rad + 6) <= bullet.x && (targets[i].y + rad + 6) >= bullet.y && (targets[i].y - rad + 6) <= bullet.y)
-                    {
-                        targets[i].deletePoint()
-                        targets.splice(i,1)
-                        return true;
-                        break;
-                    }
-                }
-        }
-        function closeHitCheck(x, rad)
-        {
-            for(var i=0; i<targets.length; i++)
-            {
-                if((targets[i].x + rad + 20) >= x && (targets[i].x - rad - 20) <= x)
-                    {
-                        return true;
-                        break;
-                    }
-            }
-        }*/
 </script>
 </body>
 </html>
